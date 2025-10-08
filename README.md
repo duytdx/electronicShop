@@ -226,23 +226,5 @@ Dự án này được phân phối dưới giấy phép MIT. Xem file `LICENSE.
 
 ## 📞 Liên hệ
 
-- Email: <your.email@example.com>
-- Project Link: [https://github.com/your-username/ElectronyatShop](https://github.com/your-username/ElectronyatShop)
-
-## 📚 Tài liệu bổ sung
-
-- [Software Requirements Specification](./Documentations/Electronyat%20Shop%20-%20SRS.pdf)
-- [System Design Models](./System%20Design%20Models/)
-  - Class Diagram
-  - Database Entity Diagram
-  - System Context Diagram
-  - Use Case Model Diagram
-
-## 🏗️ Roadmap
-
-- [ ] Tích hợp payment gateway
-- [ ] API cho mobile app
-- [ ] Hệ thống review sản phẩm
-- [ ] Tìm kiếm và lọc nâng cao
-- [ ] Hệ thống thông báo realtime
-- [ ] Multi-language support
+- Email: khuongduy.works@gmail.com
+- Project Link: https://github.com/duytdx/electronicShop.git
