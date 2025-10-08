@@ -1,0 +1,66 @@
+﻿@using ElectronyatShop.Enums;
+@using ElectronyatShop.ViewModels
+@model ProductViewModel
+
+@{
+	ViewData["Title"] = "Add New Product";
+}
+
+@section Links {
+	<link rel="icon" type="image/x-icon" href="~/assets/favicon.ico" />
+	<link rel="stylesheet" href="~/css/Admin/AddProduct.css" />
+}
+
+<h1 style="text-align: center;">Add New Product!</h1>
+
+<div class="form-container row justify-content-center">
+	<div class="col-md-4">
+		<form id="new-product-form" method="post" asp-controller="Admin" asp-action="AddNewProduct"
+			  class="row justify-content-center" enctype="multipart/form-data">
+			<div class="form-group">
+				<label asp-for="Name">Name</label>
+				<input asp-for="Name" class="form-control" autocomplete="name" aria-required="true" placeholder="Lenovo Legion 5" />
+				<span asp-validation-for="Name" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Image">Image</label>
+				<input type="file" accept=".jpg, .jpeg, .png, .bmp" asp-for="Image" class="form-control" />
+				<span asp-validation-for="Image" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="ProductType">Product Type</label>
+				<select asp-for="ProductType" asp-items="Html.GetEnumSelectList<ProductType>()" class="form-control"></select>
+				<span asp-validation-for="ProductType" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Description">Description</label>
+				<input asp-for="Description" class="form-control" />
+				<span asp-validation-for="Description" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Price">Price</label>
+				<input asp-for="Price" class="form-control" />
+				<span asp-validation-for="Price" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="AvailableQuantity">Available Quantity</label>
+				<input asp-for="AvailableQuantity" class="form-control" />
+				<span asp-validation-for="AvailableQuantity" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="DiscountPercentage">Discount Percentage</label>
+				<input asp-for="DiscountPercentage" class="form-control" />
+				<span asp-validation-for="DiscountPercentage" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Status">Is for Sale?</label>
+				<select asp-for="Status" asp-items="Model.StatusList" class="form-control"></select>
+				<span asp-validation-for="Status" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<button class="btn m-2 form-action" type="submit">Submit</button>
+				<a class="btn m-2 form-action" asp-controller="Admin" asp-action="Index">Back</a>
+			</div>
+		</form>
+	</div>
+</div>

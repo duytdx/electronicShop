@@ -1,0 +1,40 @@
+﻿services:
+  electronyat-shop:
+    image: only1adwy/electronyat-shop:latest
+    deploy:
+      mode: replicated
+      replicas: 2
+      update_config:
+        parallelism: 1
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - images:/ElectronyatShop/wwwroot/Images/
+    env_file:
+      - .env
+    environment:
+        - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+        - ConnectionStrings__PostgresConnection=${POSTGRES_CONNECTION}
+    networks:
+        - electronyat-shop
+        - shared
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+volumes:
+    images:
+        driver: local
+        name: images
+        driver_opts:
+            type: none
+            device: ${pwd}/Images
+            o: bind
+
+networks:
+    electronyat-shop:
+        driver: bridge
+        name: electronyat-shop
+    shared:
+        driver: bridge
+        name: shared
+        external: true

@@ -1,0 +1,64 @@
+﻿@model List<ElectronyatShop.Models.Product>
+@{
+    ViewData["Title"] = "Admin";
+}
+
+@section Links {
+    <link rel="stylesheet" href="~/css/Product/styles.css" />
+    <link rel="icon" type="image/x-icon" href="~/assets/favicon.ico" />
+}
+
+@section Scripts {
+    <!-- Core theme JS-->
+    <script src="~/js/AdminIndex.js"></script>
+}
+
+<!-- Section-->
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            @foreach (var product in Model)
+            {
+                <div class="col mb-5">
+                    <div class="card h-100">
+                        <!-- Product image-->
+                        <img class="card-img-top" src="~/Images/@product.Image" alt="Product Image" />
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <!-- Product name-->
+                                <h5 class="fw-bolder">@product.Name</h5>
+                            </div>
+                        </div>
+                        <!-- Product actions-->
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                <!-- Product price-->
+                                @if (product.DiscountPercentage > 0)
+                                {
+                                    <p><span class="sale-percentage">@product.DiscountPercentage%</span> Sale</p>
+                                    <hr />
+                                    <span class="text-decoration-line-through">$@product.Price.ToString(".")</span>
+                                    <span style="margin: 0 10px;"> - </span>
+                                    <span>
+                                        $@product.ActualPrice.ToString(".")
+                                    </span>
+                                }
+                                else
+                                {
+                                    <hr />
+                                    <span>$@product.Price.ToString(".")</span>
+                                }
+
+                            </div>
+                            <div class="text-center">
+                                <a class="btn btn-outline-dark m-2" href="~/Admin/EditProduct/@product.Id">Edit</a>
+                                <a class="btn btn-outline-dark m-2 delete-product-btn" href="~/Admin/DeleteProduct/@product.Id">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
