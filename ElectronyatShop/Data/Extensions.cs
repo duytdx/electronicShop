@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using ElectronyatShop.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -43,9 +42,9 @@ public static class Extensions
     {
         builder.Services.AddAuthorizationBuilder()
             .AddPolicy("AdminRole", op =>
-                op.RequireClaim("Admin", "Admin"))
+                op.RequireRole("AdminRole"))
             .AddPolicy("CustomerRole", op =>
-                op.RequireClaim("Customer", "Customer"));
+                op.RequireRole("CustomerRole"));
     }
     
     public static async Task EnableMigrationsOnStartup(this WebApplication app)
@@ -59,15 +58,19 @@ public static class Extensions
     {
         using var scope = app.Services.CreateScope();
 
-        const string role = "AdminRole";
+        const string adminRole = "AdminRole";
+        const string customerRole = "CustomerRole";
         const string email = "admin@admin.com";
 
-        var adminClaim = new Claim("Admin", "Admin");
         var roleManager = scope.ServiceProvider.GetService<RoleManager<IdentityRole>>()
                           ?? throw new NotSupportedException("roleManager null");
 
-        if (!await roleManager.RoleExistsAsync(role))
-            await roleManager.CreateAsync(new IdentityRole(role));
+        // Create roles if they don't exist
+        if (!await roleManager.RoleExistsAsync(adminRole))
+            await roleManager.CreateAsync(new IdentityRole(adminRole));
+            
+        if (!await roleManager.RoleExistsAsync(customerRole))
+            await roleManager.CreateAsync(new IdentityRole(customerRole));
 
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var admin = await userManager.FindByEmailAsync(email);
@@ -84,7 +87,6 @@ public static class Extensions
             PhoneNumber = "01120664373"
         };
         await userManager.CreateAsync(admin, "Admin@123");
-        await userManager.AddClaimAsync(admin, adminClaim);
-        await userManager.AddToRoleAsync(admin, role);
+        await userManager.AddToRoleAsync(admin, adminRole);
     }
 }

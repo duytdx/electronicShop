@@ -38,7 +38,7 @@ ElectronyatShop là một ứng dụng web thương mại điện tử được 
 1. **Clone repository**
 
    ```bash
-   git clone https://github.com/your-username/ElectronyatShop.git
+   git clone https://github.com/duytdx/ElectronyatShop.git
    cd ElectronyatShop
    ```
 

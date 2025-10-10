@@ -1,0 +1,126 @@
+@model ElectronyatShop.Models.Order
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Order Details - #@Model.Id</h4>
+                    <a href="@Url.Action("Orders")" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Orders
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Order Information</h5>
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>Order ID:</th>
+                                    <td>@Model.Id</td>
+                                </tr>
+                                <tr>
+                                    <th>Customer:</th>
+                                    <td>@Model.User?.Email</td>
+                                </tr>
+                                <tr>
+                                    <th>Order Date:</th>
+                                    <td>@Model.CreateDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                </tr>
+                                <tr>
+                                    <th>Total Price:</th>
+                                    <td><strong>@Model.TotalPrice.ToString("C")</strong></td>
+                                </tr>
+                                <tr>
+                                    <th>Delivery Address:</th>
+                                    <td>@Model.Address</td>
+                                </tr>
+                                <tr>
+                                    <th>Status:</th>
+                                    <td>
+                                        @switch (Model.Status)
+                                        {
+                                            case ElectronyatShop.Enums.OrderStatus.Ordered:
+                                                <span class="badge bg-warning">Ordered</span>
+                                                break;
+                                            case ElectronyatShop.Enums.OrderStatus.Shipped:
+                                                <span class="badge bg-info">Shipped</span>
+                                                break;
+                                            case ElectronyatShop.Enums.OrderStatus.OnTheWay:
+                                                <span class="badge bg-primary">On The Way</span>
+                                                break;
+                                            case ElectronyatShop.Enums.OrderStatus.Delivered:
+                                                <span class="badge bg-success">Delivered</span>
+                                                break;
+                                            case ElectronyatShop.Enums.OrderStatus.Cancelled:
+                                                <span class="badge bg-danger">Cancelled</span>
+                                                break;
+                                        }
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Update Order Status</h5>
+                            <form method="post" action="@Url.Action("UpdateOrderStatus")">
+                                <input type="hidden" name="orderId" value="@Model.Id" />
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">New Status:</label>
+                                    @Html.DropDownList("status", new SelectList(Enum.GetValues(typeof(ElectronyatShop.Enums.OrderStatus)).Cast<ElectronyatShop.Enums.OrderStatus>().Select(v => new { Value = (int)v, Text = v.ToString() }), "Value", "Text", (int)Model.Status), new { @class = "form-select" })
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Update Status
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <h5>Order Items</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Image</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.OrderItems != null)
+                                {
+                                    @foreach (var item in Model.OrderItems)
+                                    {
+                                        <tr>
+                                            <td>@item.Product?.Name</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(item.Product?.Image))
+                                                {
+                                                    <img src="~/Images/@item.Product.Image" alt="@item.Product.Name" style="width: 50px; height: 50px; object-fit: cover;" />
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">No image</span>
+                                                }
+                                            </td>
+                                            <td>@item.Product?.Price.ToString("C")</td>
+                                            <td>@item.Quantity</td>
+                                            <td><strong>@((item.Product?.Price * item.Quantity ?? 0).ToString("C"))</strong></td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

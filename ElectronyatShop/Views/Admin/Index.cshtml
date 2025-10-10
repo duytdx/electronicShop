@@ -1,6 +1,6 @@
 ﻿@model List<ElectronyatShop.Models.Product>
 @{
-    ViewData["Title"] = "Admin";
+    ViewData["Title"] = "Admin Dashboard";
 }
 
 @section Links {
@@ -13,9 +13,35 @@
     <script src="~/js/AdminIndex.js"></script>
 }
 
+<!-- Admin Navigation -->
+<div class="container-fluid py-3 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-3">Admin Dashboard</h2>
+                <div class="btn-group" role="group">
+                    <a href="@Url.Action("Index", "Admin")" class="btn btn-primary">
+                        <i class="bi bi-box-seam"></i> Product Management
+                    </a>
+                    <a href="@Url.Action("Users", "Admin")" class="btn btn-outline-primary">
+                        <i class="bi bi-people"></i> User Management
+                    </a>
+                    <a href="@Url.Action("Orders", "Admin")" class="btn btn-outline-primary">
+                        <i class="bi bi-cart-check"></i> Order Management
+                    </a>
+                    <a href="@Url.Action("AddNewProduct", "Admin")" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Add New Product
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Section-->
 <section class="py-5">
     <div class="container px-4 px-lg-5 mt-5">
+        <h3 class="text-center mb-4">Product Management</h3>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
             @foreach (var product in Model)
             {

@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using ElectronyatShop.Enums;
 
 namespace ElectronyatShop.Controllers;
 
@@ -14,8 +16,13 @@ public class AdminController : Controller
 	#region Controller Constructor and Attributes
 
 	private ElectronyatShopDbContext Context { get; set; }
+	private UserManager<ApplicationUser> UserManager { get; set; }
 
-	public AdminController(ElectronyatShopDbContext context) => Context = context;
+	public AdminController(ElectronyatShopDbContext context, UserManager<ApplicationUser> userManager)
+	{
+		Context = context;
+		UserManager = userManager;
+	}
 
 	#endregion
 
@@ -114,6 +121,86 @@ public class AdminController : Controller
 		await Context.SaveChangesAsync();
 		DeleteImage(imageName);
 		return RedirectToAction("Index");
+	}
+
+	// User Management Actions
+	[HttpGet]
+	public async Task<IActionResult> Users()
+	{
+		var users = await UserManager.Users.ToListAsync();
+		return View("Users", users);
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> UserDetails(string id)
+	{
+		var user = await UserManager.FindByIdAsync(id);
+		if (user == null) return RedirectToAction("Users");
+		
+		var roles = await UserManager.GetRolesAsync(user);
+		ViewBag.Roles = roles;
+		return View("UserDetails", user);
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> ToggleUserRole(string userId)
+	{
+		var user = await UserManager.FindByIdAsync(userId);
+		if (user == null) return RedirectToAction("Users");
+
+		var currentRoles = await UserManager.GetRolesAsync(user);
+		
+		if (currentRoles.Contains("AdminRole"))
+		{
+			await UserManager.RemoveFromRoleAsync(user, "AdminRole");
+			await UserManager.AddToRoleAsync(user, "CustomerRole");
+		}
+		else
+		{
+			await UserManager.RemoveFromRoleAsync(user, "CustomerRole");
+			await UserManager.AddToRoleAsync(user, "AdminRole");
+		}
+
+		return RedirectToAction("Users");
+	}
+
+	// Order Management Actions
+	[HttpGet]
+	public async Task<IActionResult> Orders()
+	{
+		var orders = await Context.Orders
+			.Include(o => o.User)
+			.Include(o => o.OrderItems!)
+			.ThenInclude(oi => oi.Product)
+			.OrderByDescending(o => o.CreateDate)
+			.ToListAsync();
+		return View("Orders", orders);
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> OrderDetails(int id)
+	{
+		var order = await Context.Orders
+			.Include(o => o.User)
+			.Include(o => o.OrderItems!)
+			.ThenInclude(oi => oi.Product)
+			.FirstOrDefaultAsync(o => o.Id == id);
+
+		if (order == null) return RedirectToAction("Orders");
+		return View("OrderDetails", order);
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> UpdateOrderStatus(int orderId, OrderStatus status)
+	{
+		var order = await Context.Orders.FindAsync(orderId);
+		if (order == null) return RedirectToAction("Orders");
+
+		order.Status = status;
+		Context.Orders.Update(order);
+		await Context.SaveChangesAsync();
+
+		return RedirectToAction("OrderDetails", new { id = orderId });
 	}
 
 	#endregion
